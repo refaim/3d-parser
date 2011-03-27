@@ -1,0 +1,11 @@
+CMAKE_MINIMUM_REQUIRED (VERSION 2.6)
+PROJECT (viewer)
+
+SET (CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/bin)
+
+# external libraries
+ADD_SUBDIRECTORY (contrib/assimp assimp)
+INCLUDE_DIRECTORIES (contrib/assimp/include)
+
+# main project
+ADD_SUBDIRECTORY (src viewer)

@@ -1,4 +1,5 @@
 #!/bin/sh
+mkdir build
 cd build
-cmake -G "Unix Makefiles" -DENABLE_BOOST_WORKAROUND=ON -DBUILD_ASSIMP_TOOLS=OFF .. && make
+cmake -G "Unix Makefiles" -DBUILD_ASSIMP_TOOLS=OFF .. && make
 cd ..

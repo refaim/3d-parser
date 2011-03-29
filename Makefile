@@ -10,7 +10,7 @@ debug: executable
 
 executable:
 	-mkdir build
-	cd build && cmake -G $(CMAKE_GENERATOR) $(CMAKE_FLAGS) .. && make
+	+cd build && cmake -G $(CMAKE_GENERATOR) $(CMAKE_FLAGS) .. && make
 
 clean:
 	-rm -rf build bin lib

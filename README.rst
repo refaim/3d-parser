@@ -4,6 +4,7 @@ OpenGL-based 3D models viewer
 
 Build requirements
 ------------------
+ * GNU Make (isn't necessary, used only for wrapper makefile)
 
  * CMake, version 2.6 or later
     * http://www.cmake.org/cmake/resources/software.html

@@ -36,11 +36,12 @@ SET (GCC_FLAGS -std=c++98 -W -Wall -pedantic -Wextra -Weffc++
                -Wold-style-cast -Wconversion -Wsign-conversion
                -Winit-self -Wunreachable-code
     )
+SET (VC_FLAGS /Wall)
 
 IF (CMAKE_COMPILER_IS_GNUCC)
     SET (ADDITIONAL_CXX_FLAGS ${GCC_FLAGS})
-ELSE (CMAKE_COMPILER_IS_GNUCC)
-    SET (ADDITIONAL_CXX_FLAGS "")
+ELSEIF (MSVC)
+    SET (ADDITIONAL_CXX_FLAGS ${VC_FLAGS})
 ENDIF (CMAKE_COMPILER_IS_GNUCC)
 
 FOREACH (flag ${ADDITIONAL_CXX_FLAGS})

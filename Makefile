@@ -4,7 +4,7 @@ BUILDER =
 CONFIGURATION = Debug
 CMAKE_FLAGS = -DBUILD_ASSIMP_TOOLS=OFF
 
-all: gnumake executable
+all: mingw executable
 
 # configurations
 debug: CONFIGURATION = Debug
@@ -17,6 +17,10 @@ release: executable
 gnumake: CMAKE_GENERATOR = "Unix Makefiles"
 gnumake: BUILDER = && make
 gnumake: executable
+
+mingw: CMAKE_GENERATOR = "MinGW Makefiles"
+mingw: BUILDER = && mingw32-make
+mingw: executable
 
 nmake: CMAKE_GENERATOR = "NMake Makefiles"
 nmake: BUILDER = && nmake

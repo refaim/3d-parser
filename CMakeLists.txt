@@ -7,7 +7,7 @@ SET (CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/bin)
 
 # external libraries
 ## Qt
-SET (QTLIBS QtCore QtGui)
+SET (QTLIBS QtCore QtGui QtOpenGL)
 FIND_PACKAGE (Qt4 COMPONENTS ${QTLIBS} REQUIRED)
 INCLUDE(${QT_USE_FILE})
 ### ignore warnings from Qt headers

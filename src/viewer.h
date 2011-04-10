@@ -1,19 +1,16 @@
-#ifndef GLVIEWER_H
-#define GLVIEWER_H
+#ifndef VIEWER_H
+#define VIEWER_H
 
 #include <QGLWidget>
 
 class Viewer : public QGLWidget
 {
     Q_OBJECT
-
-protected:
-    void initializeGL();
-    void paintGL();
-    void resizeGL();
-
 public:
+    virtual void initializeGL();
+    virtual void paintGL();
+    virtual void resizeGL(int w, int h);
     explicit Viewer(QWidget *parent = 0);
 };
 
-#endif // GLVIEWER_H
+#endif // VIEWER_H

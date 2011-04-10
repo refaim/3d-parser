@@ -39,7 +39,7 @@ void Viewer::paintGL()
     glFlush();
 }
 
-void Viewer::resizeGL()
+void Viewer::resizeGL(int w, int h)
 {
     paintGL();
 }

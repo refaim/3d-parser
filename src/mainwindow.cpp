@@ -12,17 +12,18 @@
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
-    ui(new Ui::MainWindow)
+    ui(new Ui::MainWindow),
+    viewer(new Viewer(this))
 {
     ui->setupUi(this);
-    this->viewer = new Viewer(this);
-    this->setCentralWidget(viewer);
+    setCentralWidget(viewer);
     connect(ui->actionOpen, SIGNAL(triggered()), this, SLOT(openFileDialog()));
 }
 
 MainWindow::~MainWindow()
 {
     delete ui;
+    delete viewer;
 }
 
 void MainWindow::openFileDialog()

@@ -9,7 +9,7 @@ SET(QT_USE_QTOPENGL TRUE)
 
 
 # define executable
-ADD_EXECUTABLE (viewer ${viewer_SOURCES} ${viewer_HEADERS_MOC} ${viewer_FORMS_HEADERS})
+ADD_EXECUTABLE (viewer WIN32 ${viewer_SOURCES} ${viewer_HEADERS_MOC} ${viewer_FORMS_HEADERS})
 
 # libraries
 ADD_DEPENDENCIES (viewer assimp)

@@ -31,7 +31,7 @@ vs2008: executable
 
 # targets
 executable:
-	-mkdir build
+	-mkdir -p build
 	+cd build && cmake -G $(CMAKE_GENERATOR) $(CMAKE_FLAGS) -DCMAKE_BUILD_TYPE=$(CONFIGURATION) .. $(BUILDER)
 
 clean:

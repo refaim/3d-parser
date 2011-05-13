@@ -8,22 +8,14 @@
 #include "aiPostProcess.h"
 
 #include "mainwindow.h"
-#include "ui_mainwindow.h"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
-    ui(new Ui::MainWindow),
-    viewer(new Viewer(this))
+    viewer(this)
 {
-    ui->setupUi(this);
-    setCentralWidget(viewer);
-    connect(ui->actionOpen, SIGNAL(triggered()), this, SLOT(openFileDialog()));
-}
-
-MainWindow::~MainWindow()
-{
-    delete ui;
-    delete viewer;
+    ui.setupUi(this);
+    setCentralWidget(&viewer);
+    connect(ui.actionOpen, SIGNAL(triggered()), this, SLOT(openFileDialog()));
 }
 
 void MainWindow::openFileDialog()
@@ -31,11 +23,17 @@ void MainWindow::openFileDialog()
     std::string extensions;
     Assimp::Importer importer;
     importer.GetExtensionList(extensions);
-    const QString filename = QFileDialog::getOpenFileName(this, tr("Open 3D model"), "", QString::fromStdString(extensions));
+    const QString filename = QFileDialog::getOpenFileName(this,
+        tr("Open 3D model"),
+        "",
+        QString::fromStdString(extensions));
+    if (!filename.length()) // Dialog canceled
+        return;
 
     const aiScene *scene = importer.ReadFile(filename.toStdString(), aiProcess_GenNormals);
     if (!scene)
     {
         QMessageBox::critical(this, "Importer error", importer.GetErrorString());
     }
+    viewer.setScene(scene);
 }

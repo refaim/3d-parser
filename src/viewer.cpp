@@ -1,7 +1,8 @@
 #include "viewer.h"
 
 Viewer::Viewer(QWidget *parent) :
-    QGLWidget(parent)
+    QGLWidget(parent),
+    scene(NULL)
 {}
 
 void Viewer::initializeGL()
@@ -39,7 +40,17 @@ void Viewer::paintGL()
     glFlush();
 }
 
+void Viewer::setScene(const aiScene *aScene)
+{
+    scene = aScene;
+}
+
 void Viewer::resizeGL(int w, int h)
 {
     paintGL();
+}
+
+Viewer::~Viewer()
+{
+    delete scene; // Fix it: Need actual destructor for scene (if any)
 }

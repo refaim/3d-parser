@@ -3,6 +3,7 @@
 
 #include <QMainWindow>
 #include "viewer.h"
+#include "ui_mainwindow.h"
 
 namespace Ui {
     class MainWindow;
@@ -11,13 +12,13 @@ namespace Ui {
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
+
 public:
     explicit MainWindow(QWidget *parent = 0);
-    ~MainWindow();
 
 private:
-    Ui::MainWindow *ui;
-    Viewer *viewer;
+    Ui::MainWindow ui;
+    Viewer viewer;
 
 private slots:
     void openFileDialog();

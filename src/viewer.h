@@ -8,6 +8,7 @@ class Viewer : public QGLWidget
 {
     Q_OBJECT
 
+    void recursive_render (const aiScene *sc, const aiNode* nd);
 public:
     SceneModel sceneModel;
 

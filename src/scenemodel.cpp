@@ -9,7 +9,7 @@ void SceneModel::loadScene(const std::string &filename)
         return;
 
     const aiScene *newScene = importer.ReadFile(filename, aiProcess_GenNormals);
-    if (!scene)
+    if (!newScene)
     {
         throw ImportError(importer.GetErrorString());
     }
@@ -23,7 +23,12 @@ const char * ImportError::what() const throw()
     return msg;
 }
 
-SceneModel::SceneModel(const aiScene *aScene): scene(aScene) {}
+SceneModel::SceneModel(const aiScene *aScene): scene(aScene)
+{
+#ifdef DEBUG
+    loadScene("../contrib/assimp/test/models-nonbsd/X/dwarf.x");
+#endif
+}
 
 void SceneModel::GetExtensionList(std::string &out) const
 {

@@ -1,15 +1,30 @@
 #include "viewer.h"
 #include <GL/glu.h>
+#include <QMessageBox>
+#include <QDebug>
+#include <QtCore>
+#include <QMap>
+#include <QtGui>
 
-Viewer::Viewer(QWidget *parent) : QGLWidget(parent), sceneList(0) {}
+Viewer::Viewer(QWidget *parent) : QGLWidget(parent), sceneList(0)
+{
+#ifdef DEBUG
+    loadScene("../contrib/assimp/test/models-nonbsd/X/dwarf.x");
+#endif
+}
 
 void Viewer::initializeGL()
 {
 // some init functions..
-    glClearColor(0.1f, 0.1f, 0.1f, 0.1f);
+    loadTextures();
+    glClearColor(1.f, 1.f, 1.f, 0.f);
+    glClearDepth(1.f);
+    glEnable(GL_TEXTURE_2D);
+    glShadeModel(GL_SMOOTH);
     glEnable(GL_LIGHTING);
     glEnable(GL_LIGHT0);
     glEnable(GL_DEPTH_TEST);
+    glDepthFunc(GL_LEQUAL);
     glLightModeli(GL_LIGHT_MODEL_TWO_SIDE, GL_TRUE);
     glEnable(GL_NORMALIZE);
     // XXX docs say all polygons are emitted CCW, but tests show that some aren't.
@@ -18,7 +33,7 @@ void Viewer::initializeGL()
     glColorMaterial(GL_FRONT_AND_BACK, GL_DIFFUSE);
 }
 
-void color4_to_float4(const struct aiColor4D *c, float f[4])
+void color4_to_float4(const aiColor4D *c, float f[4])
 {
     f[0] = c->r;
     f[1] = c->g;
@@ -34,7 +49,7 @@ void set_float4(float f[4], float a, float b, float c, float d)
     f[3] = d;
 }
 
-void apply_material(const aiMaterial *mtl)
+void Viewer::apply_material(const aiMaterial *mtl)
 {
     float c[4];
 
@@ -43,7 +58,15 @@ void apply_material(const aiMaterial *mtl)
     aiColor4D diffuse, specular, ambient, emission;
     float shininess, strength;
     int two_sided, wireframe;
-    unsigned int max;
+    unsigned int max, texIndex = 0;
+
+    aiString texPath;
+    if(AI_SUCCESS == mtl->GetTexture(aiTextureType_DIFFUSE, texIndex, &texPath))
+    {
+        //bind texture
+        unsigned int texId = textureIds[texPath.data];
+        glBindTexture(GL_TEXTURE_2D, texId);
+    }
 
     set_float4(c, 0.8f, 0.8f, 0.8f, 1.0f);
     if (AI_SUCCESS == aiGetMaterialColor(mtl, AI_MATKEY_COLOR_DIFFUSE, &diffuse))
@@ -67,15 +90,10 @@ void apply_material(const aiMaterial *mtl)
 
     max = 1;
     ret1 = aiGetMaterialFloatArray(mtl, AI_MATKEY_SHININESS, &shininess, &max);
-    if (ret1 == AI_SUCCESS)
-    {
-        max = 1;
-        ret2 = aiGetMaterialFloatArray(mtl, AI_MATKEY_SHININESS_STRENGTH, &strength, &max);
-        if (ret2 == AI_SUCCESS)
-            glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, shininess * strength);
-        else
-            glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, shininess);
-    }
+    max = 1;
+    ret2 = aiGetMaterialFloatArray(mtl, AI_MATKEY_SHININESS_STRENGTH, &strength, &max);
+    if ((ret1 == AI_SUCCESS) && (ret2 == AI_SUCCESS))
+        glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, shininess * strength);
     else
     {
         glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, 0.0f);
@@ -92,9 +110,10 @@ void apply_material(const aiMaterial *mtl)
 
     max = 1;
     if ((AI_SUCCESS == aiGetMaterialIntegerArray(mtl, AI_MATKEY_TWOSIDED, &two_sided, &max)) && two_sided)
-        glDisable(GL_CULL_FACE);
-    else
         glEnable(GL_CULL_FACE);
+    else
+        glDisable(GL_CULL_FACE);
+
 }
 
 void Viewer::recursive_render (const aiScene *sc, const aiNode* nd)
@@ -118,6 +137,12 @@ void Viewer::recursive_render (const aiScene *sc, const aiNode* nd)
         else
             glEnable(GL_LIGHTING);
 
+        if(mesh->mColors[0] != NULL)
+            glEnable(GL_COLOR_MATERIAL);
+        else
+            glDisable(GL_COLOR_MATERIAL);
+
+
         for (unsigned int t = 0; t < mesh->mNumFaces; ++t)
         {
             const struct aiFace* face = &mesh->mFaces[t];
@@ -136,16 +161,21 @@ void Viewer::recursive_render (const aiScene *sc, const aiNode* nd)
             for (unsigned int i = 0; i < face->mNumIndices; i++)
             {
                 int index = face->mIndices[i];
-                if(mesh->mColors[0] != NULL)
-                        glColor4fv((GLfloat*)&mesh->mColors[0][index]);
-                if(mesh->mNormals != NULL)
-                        glNormal3fv(&mesh->mNormals[index].x);
+                if (mesh->mColors[0] != NULL)
+                    glColor4fv((GLfloat*)&mesh->mColors[0][index]);
+                if (mesh->mNormals != NULL)
+                {
+                    if (mesh->HasTextureCoords(0))
+                    {
+                        glTexCoord2f(mesh->mTextureCoords[0][index].x, mesh->mTextureCoords[0][index].y);
+                    }
+                    glNormal3fv(&mesh->mNormals[index].x);
+                }
                 glVertex3fv(&mesh->mVertices[index].x);
             }
 
             glEnd();
         }
-
     }
 
     // draw all children
@@ -204,23 +234,71 @@ void Viewer::paintGL()
 
 void Viewer::resizeGL(int w, int h)
 {
+    if (!h) h = 1;
     const double aspectRatio = (double) w / h, fieldOfView = 45.0;
 
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
     gluPerspective(fieldOfView, aspectRatio, 1.0, 1000.0);  /* last two: Znear and Zfar */
     glViewport(0, 0, w, h);
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
 }
 
 void Viewer::loadScene(const std::string &filename)
 {
+    bool initialized = sceneModel.scene;
     if (sceneList)
     {
         glDeleteLists(sceneList, 1);
         sceneList = 0;
     }
     sceneModel.loadScene(filename);
+    if (initialized) loadTextures();
     // now we need redraw our brand new scene
-    repaint();
+    updateGL();
+}
+
+void Viewer::loadTextures()
+{
+    if (sceneModel->HasTextures())
+    {
+        QMessageBox::critical(this, "Feature not implemented", "Can't import embedded textures");
+        return;
+    }
+    freeTextures();
+    for (unsigned int m = 0; m < sceneModel->mNumMaterials; ++m)
+    {
+        int texIndex = 0;
+        GLuint texid;
+        aiReturn texFound = AI_SUCCESS;
+        aiString path;
+
+        while (texFound == AI_SUCCESS)
+        {
+            texFound = sceneModel->mMaterials[m]->GetTexture(aiTextureType_DIFFUSE, texIndex, &path);
+            QPixmap px(QFileInfo(QString::fromStdString(sceneModel.getFilename())).absoluteDir().filePath(path.data));
+            texid = textureIds[path.data] = bindTexture(px);
+
+            glBindTexture(GL_TEXTURE_2D, texid);
+            // some strange options goes here
+            texIndex++;
+        }
+    }
+    int numTextures = textureIds.size();
+}
+
+Viewer::~Viewer()
+{
+    freeTextures();
+}
+
+void Viewer::freeTextures()
+{
+    for (QMap<std::string, GLuint>::const_iterator i = textureIds.begin(); i != textureIds.end(); ++i)
+    {
+        deleteTexture(i.value());
+    }
+    textureIds.clear();
 }
 

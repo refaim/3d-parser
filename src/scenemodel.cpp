@@ -2,17 +2,18 @@
 #include "aiScene.h"
 #include "aiPostProcess.h"
 
-void SceneModel::loadScene(const std::string &filename)
+void SceneModel::loadScene(const std::string &aFilename)
 {
-    if (!filename.length()) // Dialog canceled
+    if (!aFilename.length()) // Dialog canceled
         return;
 
-    const aiScene *newScene = importer.ReadFile(filename, aiProcess_GenNormals);
+    const aiScene *newScene = importer.ReadFile(aFilename, aiProcess_GenNormals);
     if (!newScene)
     {
         throw ImportError(importer.GetErrorString());
     }
     scene = newScene;
+    filename = aFilename;
 
     getBoundingBox(scene_min, scene_max);
     scene_center.x = (scene_min.x + scene_max.x) / 2.0f;
@@ -27,12 +28,7 @@ const char * ImportError::what() const throw()
     return msg;
 }
 
-SceneModel::SceneModel(const aiScene *aScene): scene(aScene)
-{
-#ifdef DEBUG
-    loadScene("../contrib/assimp/test/models-nonbsd/X/dwarf.x");
-#endif
-}
+SceneModel::SceneModel(const aiScene *aScene): scene(aScene) {}
 
 void SceneModel::GetExtensionList(std::string &out) const
 {
@@ -85,4 +81,9 @@ void SceneModel::getBoundingBoxForNode(const aiNode *nd, aiVector3D &min, aiVect
     }
 
     trafo = prev;
+}
+
+const std::string & SceneModel::getFilename()
+{
+    return filename;
 }

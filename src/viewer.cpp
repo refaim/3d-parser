@@ -1,11 +1,7 @@
 #include "viewer.h"
 #include <GL/glu.h>
 
-GLuint scene_list = 0;
-
-Viewer::Viewer(QWidget *parent) :
-    QGLWidget(parent)
-{}
+Viewer::Viewer(QWidget *parent) : QGLWidget(parent), sceneList(0) {}
 
 void Viewer::initializeGL()
 {
@@ -21,7 +17,7 @@ void Viewer::initializeGL()
     //    glFrontFace(GL_CW);
     glColorMaterial(GL_FRONT_AND_BACK, GL_DIFFUSE);
 }
-// ----------------------------------------------------------------------------
+
 void color4_to_float4(const struct aiColor4D *c, float f[4])
 {
     f[0] = c->r;
@@ -30,7 +26,6 @@ void color4_to_float4(const struct aiColor4D *c, float f[4])
     f[3] = c->a;
 }
 
-// ----------------------------------------------------------------------------
 void set_float4(float f[4], float a, float b, float c, float d)
 {
     f[0] = a;
@@ -45,13 +40,9 @@ void apply_material(const aiMaterial *mtl)
 
     GLenum fill_mode;
     int ret1, ret2;
-    aiColor4D diffuse;
-    aiColor4D specular;
-    aiColor4D ambient;
-    aiColor4D emission;
+    aiColor4D diffuse, specular, ambient, emission;
     float shininess, strength;
-    int two_sided;
-    int wireframe;
+    int two_sided, wireframe;
     unsigned int max;
 
     set_float4(c, 0.8f, 0.8f, 0.8f, 1.0f);
@@ -108,62 +99,60 @@ void apply_material(const aiMaterial *mtl)
 
 void Viewer::recursive_render (const aiScene *sc, const aiNode* nd)
 {
-        int i;
-        unsigned int n = 0, t;
-        aiMatrix4x4 m = nd->mTransformation;
+    aiMatrix4x4 m = nd->mTransformation;
 
-        // update transform
-        m.Transpose();
-        glPushMatrix();
-        glMultMatrixf((float*)&m);
+    // update transform
+    m.Transpose();
+    glPushMatrix();
+    glMultMatrixf((float*)&m);
 
-        // draw all meshes assigned to this node
-        for (; n < nd->mNumMeshes; ++n)
+    // draw all meshes assigned to this node
+    for (unsigned int n = 0; n < nd->mNumMeshes; ++n)
+    {
+        const aiMesh* mesh = sceneModel->mMeshes[nd->mMeshes[n]];
+
+        apply_material(sc->mMaterials[mesh->mMaterialIndex]);
+
+        if (mesh->mNormals == NULL)
+            glDisable(GL_LIGHTING);
+        else
+            glEnable(GL_LIGHTING);
+
+        for (unsigned int t = 0; t < mesh->mNumFaces; ++t)
         {
-            const aiMesh* mesh = sceneModel->mMeshes[nd->mMeshes[n]];
+            const struct aiFace* face = &mesh->mFaces[t];
+            GLenum faceMode;
 
-            apply_material(sc->mMaterials[mesh->mMaterialIndex]);
-
-            if (mesh->mNormals == NULL)
-                glDisable(GL_LIGHTING);
-            else
-                glEnable(GL_LIGHTING);
-
-            for (t = 0; t < mesh->mNumFaces; ++t)
+            switch (face->mNumIndices)
             {
-                const struct aiFace* face = &mesh->mFaces[t];
-                GLenum face_mode;
-
-                switch (face->mNumIndices)
-                {
-                    case 1: face_mode = GL_POINTS; break;
-                    case 2: face_mode = GL_LINES; break;
-                    case 3: face_mode = GL_TRIANGLES; break;
-                    default: face_mode = GL_POLYGON; break;
-                }
-
-                glBegin(face_mode);
-
-                for (i = 0; i < face->mNumIndices; i++)
-                {
-                    int index = face->mIndices[i];
-                    if(mesh->mColors[0] != NULL)
-                            glColor4fv((GLfloat*)&mesh->mColors[0][index]);
-                    if(mesh->mNormals != NULL)
-                            glNormal3fv(&mesh->mNormals[index].x);
-                    glVertex3fv(&mesh->mVertices[index].x);
-                }
-
-                glEnd();
+                case 1: faceMode = GL_POINTS; break;
+                case 2: faceMode = GL_LINES; break;
+                case 3: faceMode = GL_TRIANGLES; break;
+                default: faceMode = GL_POLYGON; break;
             }
 
+            glBegin(faceMode);
+
+            for (unsigned int i = 0; i < face->mNumIndices; i++)
+            {
+                int index = face->mIndices[i];
+                if(mesh->mColors[0] != NULL)
+                        glColor4fv((GLfloat*)&mesh->mColors[0][index]);
+                if(mesh->mNormals != NULL)
+                        glNormal3fv(&mesh->mNormals[index].x);
+                glVertex3fv(&mesh->mVertices[index].x);
+            }
+
+            glEnd();
         }
 
-        // draw all children
-        for (n = 0; n < nd->mNumChildren; ++n)
-            recursive_render(sc, nd->mChildren[n]);
+    }
 
-        glPopMatrix();
+    // draw all children
+    for (unsigned int n = 0; n < nd->mNumChildren; ++n)
+        recursive_render(sc, nd->mChildren[n]);
+
+    glPopMatrix();
 }
 
 
@@ -172,6 +161,11 @@ void Viewer::paintGL()
     float tmp;
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    if (!sceneModel.isLoaded())
+    {
+        return;
+    }
+
 
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
@@ -192,10 +186,10 @@ void Viewer::paintGL()
 
     // if the display list has not been made yet, create a new one and
     // fill it with scene contents
-    if (scene_list == 0)
+    if (sceneList == 0)
     {
-        scene_list = glGenLists(1);
-        glNewList(scene_list, GL_COMPILE);
+        sceneList = glGenLists(1);
+        glNewList(sceneList, GL_COMPILE);
         // now begin at the root node of the imported data and traverse
         // the scenegraph by multiplying subsequent local transforms
         // together on GL's matrix stack.
@@ -203,19 +197,30 @@ void Viewer::paintGL()
         glEndList();
     }
 
-    glCallList(scene_list);
-    //glutSwapBuffers();
+    glCallList(sceneList);
 
     //do_motion();
 }
 
 void Viewer::resizeGL(int w, int h)
 {
-    const double aspectRatio = (float) w / h, fieldOfView = 45.0;
+    const double aspectRatio = (double) w / h, fieldOfView = 45.0;
 
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
     gluPerspective(fieldOfView, aspectRatio, 1.0, 1000.0);  /* last two: Znear and Zfar */
     glViewport(0, 0, w, h);
+}
+
+void Viewer::loadScene(const std::string &filename)
+{
+    if (sceneList)
+    {
+        glDeleteLists(sceneList, 1);
+        sceneList = 0;
+    }
+    sceneModel.loadScene(filename);
+    // now we need redraw our brand new scene
+    repaint();
 }
 

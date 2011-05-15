@@ -21,14 +21,14 @@ void MainWindow::openFileDialog()
     const QString filename = QFileDialog::getOpenFileName(this,
         tr("Open 3D model"),
         "",
-        QString::fromStdString(extensions));
+        tr("All suported formats (%1)").arg(QString::fromStdString(extensions).replace(';', " ")));
 
     if (!filename.length()) // Dialog canceled
         return;
 
     try
     {
-        viewer.sceneModel.loadScene(filename.toStdString());
+        viewer.loadScene(filename.toStdString());
     }
     catch (ImportError error)
     {

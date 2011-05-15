@@ -176,7 +176,7 @@ void Viewer::paintGL()
 
     // scale the whole asset to fit into our view frustum
     tmp = sceneModel.scene_max.x - sceneModel.scene_min.x;
-    tmp = std::max(sceneModel.scene_max.y - sceneModel.scene_min.y,tmp);
+	tmp = std::max(sceneModel.scene_max.y - sceneModel.scene_min.y,tmp);
     tmp = std::max(sceneModel.scene_max.z - sceneModel.scene_min.z,tmp);
     tmp = 1.f / tmp;
     glScalef(tmp, tmp, tmp);

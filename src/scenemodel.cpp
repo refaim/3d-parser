@@ -1,5 +1,4 @@
 #include "scenemodel.h"
-#include "assimp.hpp"
 #include "aiScene.h"
 #include "aiPostProcess.h"
 

@@ -19,6 +19,7 @@ class SceneModel
     Assimp::Importer importer; // Lifetime of importer determines lifetime of scene
 
     void getBoundingBoxForNode(const aiNode *nd, aiVector3D &min, aiVector3D &max, aiMatrix4x4 &trafo);
+    std::string filename;
 public:
     const aiScene *scene;
     aiVector3D scene_min, scene_max, scene_center;
@@ -27,6 +28,7 @@ public:
     void GetExtensionList(std::string &out) const;
     void loadScene(const std::string &filename);
     void getBoundingBox(aiVector3D &min, aiVector3D &max);
+    const std::string &getFilename();
 
 
     bool isLoaded() const;

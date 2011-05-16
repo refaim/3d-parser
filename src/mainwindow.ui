@@ -20,7 +20,7 @@
      <x>0</x>
      <y>0</y>
      <width>400</width>
-     <height>18</height>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu">
@@ -37,7 +37,14 @@
     </property>
     <addaction name="actionAbout"/>
    </widget>
+   <widget class="QMenu" name="menuNavigation">
+    <property name="title">
+     <string>Navigation</string>
+    </property>
+    <addaction name="actionSetDefPos"/>
+   </widget>
    <addaction name="menu"/>
+   <addaction name="menuNavigation"/>
    <addaction name="menuHelp"/>
   </widget>
   <action name="actionOpen">
@@ -59,6 +66,16 @@
   <action name="actionAbout">
    <property name="text">
     <string>&amp;About</string>
+   </property>
+  </action>
+  <action name="actionFlush">
+   <property name="text">
+    <string>Flush</string>
+   </property>
+  </action>
+  <action name="actionSetDefPos">
+   <property name="text">
+    <string>Set default position</string>
    </property>
   </action>
  </widget>

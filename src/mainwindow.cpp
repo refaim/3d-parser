@@ -57,6 +57,7 @@ MainWindow::MainWindow(QWidget *parent) :
     setCentralWidget(&viewer);
 	viewer.setFocus();
     connect(ui.actionOpen, SIGNAL(triggered()), this, SLOT(openFileDialog()));
+    connect(ui.actionSetDefPos, SIGNAL(triggered()), &viewer, SLOT(setDefPos()));
 }
 
 void MainWindow::openFileDialog()

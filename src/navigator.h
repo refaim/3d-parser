@@ -37,6 +37,7 @@ public:
 	Rotator();
 	void setRotation(ECoord aC, EDir aDir);
 	void rotate() const;
+    void setDefault();
 };
 
 /**************************************************************/
@@ -58,6 +59,7 @@ public:
     SclTransformer();
     void setScaling(EDir aDir);
 	void scale() const;
+    void setDefault();
 };
 
 #endif	// NAVIGATOR_H

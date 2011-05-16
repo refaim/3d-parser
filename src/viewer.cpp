@@ -355,3 +355,10 @@ void Viewer::keyReleaseEvent(QKeyEvent *ev)
  //   }
  //   updateGL();
 }
+
+void Viewer::setDefPos()
+{
+    rot.setDefault();
+    scl.setDefault();
+    updateGL();
+}

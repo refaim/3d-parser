@@ -24,6 +24,10 @@ class Viewer : public QGLWidget
 
 	Rotator rot;
     SclTransformer scl;
+    
+
+private slots:
+    void setDefPos();
 
 public:
     SceneModel sceneModel;

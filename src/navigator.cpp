@@ -6,7 +6,7 @@ const float Rotator::ANGLE_STEP = 10.f;
 
 Rotator::Rotator()
 {
-	angle[cX] = angle[cX] = angle[cX] = 0.f;
+    setDefault();
 }
 
 void Rotator::setRotation(ECoord aC, EDir aDir)
@@ -19,6 +19,11 @@ void Rotator::rotate() const
 	glRotatef(angle[cX], 1.f, 0.f, 0.f);
     glRotatef(angle[cY], 0.f, 1.f, 0.f);
     glRotatef(angle[cZ], 0.f, 0.f, 1.f);
+}
+
+void Rotator::setDefault()
+{
+    angle[cX] = angle[cX] = angle[cX] = 0.f;
 }
 
 /**************************************************************/
@@ -39,4 +44,9 @@ void SclTransformer::setScaling(EDir aDir)
 void SclTransformer::scale() const
 {
     glTranslatef(0.f, 0.f, val);
+}
+
+void SclTransformer::setDefault()
+{
+    val = 0.f;
 }

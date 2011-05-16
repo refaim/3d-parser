@@ -1,4 +1,4 @@
-#include "viewer.h"	//Must be changed to #include "navigator.h"
+#include "viewer.h" //Must be changed to #include "navigator.h"
 
 /**************************************************************/
 

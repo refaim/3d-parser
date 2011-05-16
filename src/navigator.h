@@ -8,7 +8,7 @@ class Navigator
 private:
 
 public:
-	Navigator() {}
+    Navigator() {}
 };
 
 /**************************************************************/
@@ -16,9 +16,7 @@ public:
 class Rotator: public Navigator
 {
 private:
-	static const float ANGLE_STEP;
-
-	inline void setCoord(GLfloat aX, GLfloat aY, GLfloat aZ);
+    static const float ANGLE_STEP;
 
 	GLfloat angle[3];
 public:
@@ -62,4 +60,4 @@ public:
     void setDefault();
 };
 
-#endif	// NAVIGATOR_H
+#endif  // NAVIGATOR_H

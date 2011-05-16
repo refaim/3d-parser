@@ -22,6 +22,8 @@ void Viewer::initializeGL()
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_NORMALIZE);
 
+    glEnable(GL_MULTISAMPLE);
+
     glDepthFunc(GL_LEQUAL);
     glLightModeli(GL_LIGHT_MODEL_TWO_SIDE, GL_TRUE);
     // XXX docs say all polygons are emitted CCW, but tests show that some aren't.

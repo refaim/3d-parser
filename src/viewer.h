@@ -5,8 +5,10 @@
 #include <QGLWidget>
 #include <QMap>
 #include <QKeyEvent>
+#include <QSet>
 #include "navigator.h"
 #include "scenemodel.h"
+
 
 class Viewer : public QGLWidget
 {
@@ -21,6 +23,8 @@ class Viewer : public QGLWidget
     QMap<std::string, GLuint> textureIds;
 
 	Rotator rot;
+    SclTransformer scl;
+
 public:
     SceneModel sceneModel;
 
@@ -32,6 +36,7 @@ public:
     ~Viewer();
 
 	void keyPressEvent(QKeyEvent *ev);
+    void keyReleaseEvent(QKeyEvent *ev);
 
     explicit Viewer(QWidget *parent = 0);
 };

@@ -203,7 +203,8 @@ void Viewer::paintGL()
 
     // rotate it around the y axis
     /*glRotatef(rot.getAngle(),0.f,1.f,0.f);*/
-	rot.Rotate();
+    scl.scale();
+	rot.rotate();
 
     // scale the whole asset to fit into our view frustum
     tmp = sceneModel.scene_max.x - sceneModel.scene_min.x;
@@ -317,23 +318,40 @@ void Viewer::keyPressEvent(QKeyEvent *ev)
 	switch (ev->key())
 	{
 		case Qt::Key_Left:
-			rot.setRotateY(Rotator::dLeft);
+            rot.setRotation(Rotator::cY, Rotator::dLeft);
 			break;
 		case Qt::Key_Right:
-			rot.setRotateY(Rotator::dRight);
+			rot.setRotation(Rotator::cY, Rotator::dRight);
 			break;
 		case Qt::Key_Up:
-			rot.setRotateX(Rotator::dLeft);
+			rot.setRotation(Rotator::cX, Rotator::dLeft);
 			break;
 		case Qt::Key_Down:
-			rot.setRotateX(Rotator::dRight);
+			rot.setRotation(Rotator::cX, Rotator::dRight);
 			break;
 		case Qt::Key_PageUp:
-			rot.setRotateZ(Rotator::dRight);
+			rot.setRotation(Rotator::cZ, Rotator::dRight);
 			break;
 		case Qt::Key_PageDown:
-			rot.setRotateZ(Rotator::dLeft);
+			rot.setRotation(Rotator::cZ, Rotator::dLeft);
 			break;
+        case Qt::Key_Plus:
+            scl.setScaling(SclTransformer::dPlus);
+            break;
+        case Qt::Key_Minus:
+            scl.setScaling(SclTransformer::dMinus);
+            break;
 	}
 	updateGL();
+}
+
+void Viewer::keyReleaseEvent(QKeyEvent *ev)
+{
+ //   switch (ev->key())
+	//{
+	//	case Qt::Key_Left:
+ //           rot.setRotateY(Rotator::dLeft);
+	//		break;
+ //   }
+ //   updateGL();
 }

@@ -11,6 +11,8 @@ public:
 	Navigator() {}
 };
 
+/**************************************************************/
+
 class Rotator: public Navigator
 {
 private:
@@ -18,21 +20,44 @@ private:
 
 	inline void setCoord(GLfloat aX, GLfloat aY, GLfloat aZ);
 
-	GLfloat angleX, angleY, angleZ;
+	GLfloat angle[3];
 public:
 	enum EDir
 	{
 		dLeft = -1,
 		dRight = 1
 	};
+    enum ECoord
+    {
+        cX = 0,
+        cY,
+        cZ
+    };
 
 	Rotator();
-	
-	void setRotateY(EDir aDir);
-	void setRotateX(EDir aDir);
-	void setRotateZ(EDir aDir);
+	void setRotation(ECoord aC, EDir aDir);
+	void rotate() const;
+};
 
-	void Rotate() const;
+/**************************************************************/
+
+class SclTransformer: public Navigator
+{
+private:
+    static const float SCALING_STEP;
+
+    GLfloat val;
+
+public:
+    enum EDir
+	{
+		dPlus = 1,
+		dMinus = -1
+	};
+
+    SclTransformer();
+    void setScaling(EDir aDir);
+	void scale() const;
 };
 
 #endif	// NAVIGATOR_H

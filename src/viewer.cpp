@@ -261,12 +261,16 @@ void Viewer::loadScene(const std::string &filename)
 
 void Viewer::loadTextures()
 {
+    if (!sceneModel.isLoaded())
+    {
+        return;
+    }
     if (sceneModel->HasTextures())
     {
         QMessageBox::critical(this, "Feature not implemented", "Can't import embedded textures");
         return;
     }
-    freeTextures();
+    freeTextures(); // Makes no harm if there is no textures loaded;
     for (unsigned int m = 0; m < sceneModel->mNumMaterials; ++m)
     {
         int texIndex = 0;
@@ -277,7 +281,13 @@ void Viewer::loadTextures()
         while (texFound == AI_SUCCESS)
         {
             texFound = sceneModel->mMaterials[m]->GetTexture(aiTextureType_DIFFUSE, texIndex, &path);
-            QPixmap px(QFileInfo(QString::fromStdString(sceneModel.getFilename())).absoluteDir().filePath(path.data));
+            QString texturepath = QDir::cleanPath(
+                        QFileInfo(QString::fromStdString(sceneModel.getFilename()))
+                            .absoluteDir()
+                            .filePath(path.data)
+                            .replace('\\', '/') // Example with spider shows that damn .obj contains windows native separators
+                        );
+            QPixmap px(texturepath);
             texid = textureIds[path.data] = bindTexture(px);
 
             glBindTexture(GL_TEXTURE_2D, texid);
@@ -285,7 +295,6 @@ void Viewer::loadTextures()
             texIndex++;
         }
     }
-    int numTextures = textureIds.size();
 }
 
 Viewer::~Viewer()
@@ -301,4 +310,3 @@ void Viewer::freeTextures()
     }
     textureIds.clear();
 }
-

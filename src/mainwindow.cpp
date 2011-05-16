@@ -1,5 +1,4 @@
 #include <string>
-
 #include <QFileDialog>
 #include <QMessageBox>
 
@@ -56,6 +55,7 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui.setupUi(this);
     setCentralWidget(&viewer);
+	viewer.setFocus();
     connect(ui.actionOpen, SIGNAL(triggered()), this, SLOT(openFileDialog()));
 }
 

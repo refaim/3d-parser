@@ -1,5 +1,4 @@
 #include "scenemodel.h"
-#include "aiScene.h"
 #include "aiPostProcess.h"
 
 void SceneModel::loadScene(const std::string &aFilename)

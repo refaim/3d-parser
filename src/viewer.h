@@ -4,8 +4,9 @@
 #include <string>
 #include <QGLWidget>
 #include <QMap>
+#include <QKeyEvent>
+#include "navigator.h"
 #include "scenemodel.h"
-#include <GL/glu.h>
 
 class Viewer : public QGLWidget
 {
@@ -18,6 +19,8 @@ class Viewer : public QGLWidget
     void freeTextures();
     GLuint sceneList;
     QMap<std::string, GLuint> textureIds;
+
+	Rotator rot;
 public:
     SceneModel sceneModel;
 
@@ -27,6 +30,8 @@ public:
 
     void loadScene(const std::string &filename);
     ~Viewer();
+
+	void keyPressEvent(QKeyEvent *ev);
 
     explicit Viewer(QWidget *parent = 0);
 };

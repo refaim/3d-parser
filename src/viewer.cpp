@@ -1,4 +1,5 @@
 #include "viewer.h"
+
 #include <QMessageBox>
 #include <QDebug>
 #include <QtCore>
@@ -20,11 +21,11 @@ void Viewer::initializeGL()
     glClearDepth(1.f);
     glShadeModel(GL_SMOOTH);
 
-	glEnable(GL_TEXTURE_2D);
+    glEnable(GL_TEXTURE_2D);
     glEnable(GL_LIGHTING);
     glEnable(GL_LIGHT0);
     glEnable(GL_DEPTH_TEST);
-	glEnable(GL_NORMALIZE);
+    glEnable(GL_NORMALIZE);
 
     glDepthFunc(GL_LEQUAL);
     glLightModeli(GL_LIGHT_MODEL_TWO_SIDE, GL_TRUE);
@@ -118,8 +119,8 @@ void Viewer::apply_material(const aiMaterial *mtl)
 
 inline void setEnable(GLenum cap, bool cond)
 {
-	if(cond)
-		glEnable(cap);
+    if(cond)
+        glEnable(cap);
     else
         glDisable(cap);
 }
@@ -137,11 +138,11 @@ void Viewer::recursive_render (const aiScene *sc, const aiNode* nd)
     for (unsigned int n = 0; n < nd->mNumMeshes; ++n)
     {
         const aiMesh* mesh = sceneModel->mMeshes[nd->mMeshes[n]];
-		
+
         apply_material(sc->mMaterials[mesh->mMaterialIndex]);
 
-		setEnable(GL_LIGHTING, mesh->mNormals != NULL);
-		setEnable(GL_COLOR_MATERIAL, mesh->mColors[0] != NULL);
+        setEnable(GL_LIGHTING, mesh->mNormals != NULL);
+        setEnable(GL_COLOR_MATERIAL, mesh->mColors[0] != NULL);
 
         for (unsigned int t = 0; t < mesh->mNumFaces; ++t)
         {
@@ -203,14 +204,17 @@ void Viewer::paintGL()
 
     // rotate it around the y axis
     /*glRotatef(rot.getAngle(),0.f,1.f,0.f);*/
-	rot.Rotate();
+    rot.Rotate();
 
-    // scale the whole asset to fit into our view frustum
-    tmp = sceneModel.scene_max.x - sceneModel.scene_min.x;
-	tmp = max(sceneModel.scene_max.y - sceneModel.scene_min.y,tmp);
-    tmp = max(sceneModel.scene_max.z - sceneModel.scene_min.z,tmp);
-    tmp = 1.f / tmp;
-    glScalef(tmp, tmp, tmp);
+    {
+        using namespace std; // workaround for VC9 strange behaviour
+        // scale the whole asset to fit into our view frustum
+        tmp = sceneModel.scene_max.x - sceneModel.scene_min.x;
+        tmp = max(sceneModel.scene_max.y - sceneModel.scene_min.y, tmp);
+        tmp = max(sceneModel.scene_max.z - sceneModel.scene_min.z, tmp);
+        tmp = 1.f / tmp;
+        glScalef(tmp, tmp, tmp);
+    }
 
     // center the model
     glTranslatef( -sceneModel.scene_center.x, -sceneModel.scene_center.y, -sceneModel.scene_center.z );
@@ -282,7 +286,7 @@ void Viewer::loadTextures()
         while (texFound == AI_SUCCESS)
         {
             texFound = sceneModel->mMaterials[m]->GetTexture(aiTextureType_DIFFUSE, texIndex, &path);
-			QString texturepath = QDir::cleanPath(
+            QString texturepath = QDir::cleanPath(
                         QFileInfo(QString::fromStdString(sceneModel.getFilename()))
                             .absoluteDir()
                             .filePath(path.data)
@@ -314,26 +318,26 @@ void Viewer::freeTextures()
 
 void Viewer::keyPressEvent(QKeyEvent *ev)
 {
-	switch (ev->key())
-	{
-		case Qt::Key_Left:
-			rot.setRotateY(Rotator::dLeft);
-			break;
-		case Qt::Key_Right:
-			rot.setRotateY(Rotator::dRight);
-			break;
-		case Qt::Key_Up:
-			rot.setRotateX(Rotator::dLeft);
-			break;
-		case Qt::Key_Down:
-			rot.setRotateX(Rotator::dRight);
-			break;
-		case Qt::Key_PageUp:
-			rot.setRotateZ(Rotator::dRight);
-			break;
-		case Qt::Key_PageDown:
-			rot.setRotateZ(Rotator::dLeft);
-			break;
-	}
-	updateGL();
+    switch (ev->key())
+    {
+        case Qt::Key_Left:
+            rot.setRotateY(Rotator::dLeft);
+            break;
+        case Qt::Key_Right:
+            rot.setRotateY(Rotator::dRight);
+            break;
+        case Qt::Key_Up:
+            rot.setRotateX(Rotator::dLeft);
+            break;
+        case Qt::Key_Down:
+            rot.setRotateX(Rotator::dRight);
+            break;
+        case Qt::Key_PageUp:
+            rot.setRotateZ(Rotator::dRight);
+            break;
+        case Qt::Key_PageDown:
+            rot.setRotateZ(Rotator::dLeft);
+            break;
+    }
+    updateGL();
 }

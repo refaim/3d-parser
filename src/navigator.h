@@ -8,31 +8,31 @@ class Navigator
 private:
 
 public:
-	Navigator() {}
+    Navigator() {}
 };
 
 class Rotator: public Navigator
 {
 private:
-	static const float ANGLE_STEP;
+    static const float ANGLE_STEP;
 
-	inline void setCoord(GLfloat aX, GLfloat aY, GLfloat aZ);
+    inline void setCoord(GLfloat aX, GLfloat aY, GLfloat aZ);
 
-	GLfloat angleX, angleY, angleZ;
+    GLfloat angleX, angleY, angleZ;
 public:
-	enum EDir
-	{
-		dLeft = -1,
-		dRight = 1
-	};
+    enum EDir
+    {
+        dLeft = -1,
+        dRight = 1
+    };
 
-	Rotator();
-	
-	void setRotateY(EDir aDir);
-	void setRotateX(EDir aDir);
-	void setRotateZ(EDir aDir);
+    Rotator();
 
-	void Rotate() const;
+    void setRotateY(EDir aDir);
+    void setRotateX(EDir aDir);
+    void setRotateZ(EDir aDir);
+
+    void Rotate() const;
 };
 
-#endif	// NAVIGATOR_H
+#endif  // NAVIGATOR_H

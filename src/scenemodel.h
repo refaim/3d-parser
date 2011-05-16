@@ -3,7 +3,7 @@
 
 #include <string>
 #include <exception>
-#include "assimp.hpp"
+#include <assimp.hpp>
 #include "aiScene.h"
 
 class ImportError: std::exception {

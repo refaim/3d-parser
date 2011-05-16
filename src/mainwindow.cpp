@@ -57,6 +57,10 @@ MainWindow::MainWindow(QWidget *parent) :
     setCentralWidget(&viewer);
     viewer.setFocus();
     connect(ui.actionOpen, SIGNAL(triggered()), this, SLOT(openFileDialog()));
+
+    #ifdef DEBUG
+        viewer.loadScene("../contrib/assimp/test/models-nonbsd/X/dwarf.x");
+    #endif
 }
 
 void MainWindow::openFileDialog()

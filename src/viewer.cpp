@@ -6,12 +6,7 @@
 #include <QMap>
 #include <QtGui>
 
-Viewer::Viewer(QWidget *parent) : QGLWidget(parent), sceneList(0)
-{
-#ifdef DEBUG
-    loadScene("../contrib/assimp/test/models-nonbsd/X/dwarf.x");
-#endif
-}
+Viewer::Viewer(QWidget *parent) : QGLWidget(parent), sceneList(0) {}
 
 void Viewer::initializeGL()
 {
@@ -197,7 +192,6 @@ void Viewer::paintGL()
         return;
     }
 
-
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
     gluLookAt(0.f,0.f,3.f,0.f,0.f,-5.f,0.f,1.f,0.f);
@@ -252,14 +246,13 @@ void Viewer::resizeGL(int w, int h)
 
 void Viewer::loadScene(const std::string &filename)
 {
-    bool initialized = sceneModel.scene;
     if (sceneList)
     {
         glDeleteLists(sceneList, 1);
         sceneList = 0;
     }
     sceneModel.loadScene(filename);
-    if (initialized) loadTextures();
+    loadTextures();
     // now we need redraw our brand new scene
     updateGL();
 }
@@ -286,12 +279,12 @@ void Viewer::loadTextures()
         while (texFound == AI_SUCCESS)
         {
             texFound = sceneModel->mMaterials[m]->GetTexture(aiTextureType_DIFFUSE, texIndex, &path);
-            QString texturepath = QDir::cleanPath(
-                        QFileInfo(QString::fromStdString(sceneModel.getFilename()))
-                            .absoluteDir()
-                            .filePath(path.data)
-                            .replace('\\', '/') // Example with spider shows that damn .obj contains windows native separators
-                        );
+            QString texturepath = QDir::toNativeSeparators(QDir::cleanPath(
+                QFileInfo(QString::fromStdString(sceneModel.getFilename()))
+                    .absoluteDir()
+                    .filePath(path.data)
+                    .replace('\\', '/') // Example with spider shows that damn .obj contains windows native separators
+                ));
             QPixmap px(texturepath);
             texid = textureIds[path.data] = bindTexture(px);
 
@@ -341,3 +334,4 @@ void Viewer::keyPressEvent(QKeyEvent *ev)
     }
     updateGL();
 }
+

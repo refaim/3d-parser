@@ -1,7 +1,8 @@
 # prepare QT
-SET (viewer_SOURCES viewer.cpp main.cpp mainwindow.cpp scenemodel.cpp)
-SET (viewer_HEADERS viewer.h mainwindow.h scenemodel.h)
+file (GLOB viewer_SOURCES *.cpp)
+file (GLOB viewer_HEADERS *.h)
 SET (viewer_FORMS mainwindow.ui)
+
 QT4_WRAP_CPP(viewer_HEADERS_MOC ${viewer_HEADERS})
 QT4_WRAP_UI(viewer_FORMS_HEADERS ${viewer_FORMS})
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR})

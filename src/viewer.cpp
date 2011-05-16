@@ -200,7 +200,9 @@ void Viewer::paintGL()
 
     // rotate it around the y axis
     /*glRotatef(rot.getAngle(),0.f,1.f,0.f);*/
-    rot.Rotate();
+
+    scl.scale();
+	rot.rotate();
 
     {
         using namespace std; // workaround for VC9 strange behaviour
@@ -313,27 +315,50 @@ void Viewer::freeTextures()
 
 void Viewer::keyPressEvent(QKeyEvent *ev)
 {
-    switch (ev->key())
-    {
-        case Qt::Key_Left:
-            rot.setRotateY(Rotator::dLeft);
+	switch (ev->key())
+	{
+		case Qt::Key_Left:
+            rot.setRotation(Rotator::cY, Rotator::dLeft);
+			break;
+		case Qt::Key_Right:
+			rot.setRotation(Rotator::cY, Rotator::dRight);
+			break;
+		case Qt::Key_Up:
+			rot.setRotation(Rotator::cX, Rotator::dLeft);
+			break;
+		case Qt::Key_Down:
+			rot.setRotation(Rotator::cX, Rotator::dRight);
+			break;
+		case Qt::Key_PageUp:
+			rot.setRotation(Rotator::cZ, Rotator::dRight);
+			break;
+		case Qt::Key_PageDown:
+			rot.setRotation(Rotator::cZ, Rotator::dLeft);
+			break;
+        case Qt::Key_Plus:
+            scl.setScaling(SclTransformer::dPlus);
             break;
-        case Qt::Key_Right:
-            rot.setRotateY(Rotator::dRight);
+        case Qt::Key_Minus:
+            scl.setScaling(SclTransformer::dMinus);
             break;
-        case Qt::Key_Up:
-            rot.setRotateX(Rotator::dLeft);
-            break;
-        case Qt::Key_Down:
-            rot.setRotateX(Rotator::dRight);
-            break;
-        case Qt::Key_PageUp:
-            rot.setRotateZ(Rotator::dRight);
-            break;
-        case Qt::Key_PageDown:
-            rot.setRotateZ(Rotator::dLeft);
-            break;
-    }
-    updateGL();
+	}
+	updateGL();
 }
 
+void Viewer::keyReleaseEvent(QKeyEvent *ev)
+{
+ //   switch (ev->key())
+	//{
+	//	case Qt::Key_Left:
+ //           rot.setRotateY(Rotator::dLeft);
+	//		break;
+ //   }
+ //   updateGL();
+}
+
+void Viewer::setDefPos()
+{
+    rot.setDefault();
+    scl.setDefault();
+    updateGL();
+}

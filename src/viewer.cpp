@@ -331,7 +331,10 @@ void Viewer::keyPressEvent(QKeyEvent *ev)
         case Qt::Key_PageDown:
             rot.setRotateZ(Rotator::dLeft);
             break;
+        case Qt::Key_Return:
+        case Qt::Key_Enter:
+            rot.showFace();
+            break;
     }
     updateGL();
 }
-

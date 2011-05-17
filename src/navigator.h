@@ -28,6 +28,7 @@ public:
 
     Rotator();
 
+    void showFace();
     void setRotateY(EDir aDir);
     void setRotateX(EDir aDir);
     void setRotateZ(EDir aDir);

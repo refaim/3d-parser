@@ -4,6 +4,11 @@ const float Rotator::ANGLE_STEP = 10.f;
 
 Rotator::Rotator()
 {
+    showFace();
+}
+
+void Rotator::showFace()
+{
     angleX = angleY = angleZ = 0.f;
 }
 

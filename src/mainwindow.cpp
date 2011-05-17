@@ -1,5 +1,7 @@
 #include <string>
+
 #include <QFileDialog>
+#include <QFileInfo>
 #include <QMessageBox>
 
 #include "mainwindow.h"
@@ -47,7 +49,8 @@ QString SUPPORTED_FORMATS[] = {
     "Wavefront Object (*.obj) (*.obj)",
     "All Files (*.*) (*.*)",
 };
-#define FORMATS_COUNT sizeof(SUPPORTED_FORMATS) / sizeof(SUPPORTED_FORMATS[0])
+const unsigned int FORMATS_COUNT = sizeof(SUPPORTED_FORMATS) / sizeof(SUPPORTED_FORMATS[0]);
+const QString DEFAULT_TITLE = "3D Viewer";
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -89,7 +92,11 @@ void MainWindow::openFileDialog()
     try
     {
         viewer.loadScene(filename.toStdString());
+        viewer.setDefPos();
         ui.menuCamera->setEnabled(true);
+        setWindowTitle(tr("%1 - %2").arg(
+            QFileInfo(filename).fileName(),
+            DEFAULT_TITLE));
     }
     catch (ImportError error)
     {

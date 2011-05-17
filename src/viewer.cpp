@@ -6,7 +6,10 @@
 #include <QMap>
 #include <QtGui>
 
-#define GL_MULTISAMPLE				0x809D
+#ifndef GL_MULTISAMPLE
+// needed if OpenGL version < 1.3
+#define GL_MULTISAMPLE 0x809D
+#endif
 
 Viewer::Viewer(QWidget *parent) : QGLWidget(parent), sceneList(0)
 {

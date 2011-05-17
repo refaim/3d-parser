@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>400</width>
-    <height>300</height>
+    <width>640</width>
+    <height>480</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -19,7 +19,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>400</width>
+     <width>640</width>
      <height>21</height>
     </rect>
    </property>
@@ -37,14 +37,14 @@
     </property>
     <addaction name="actionAbout"/>
    </widget>
-   <widget class="QMenu" name="menuNavigation">
+   <widget class="QMenu" name="menuCamera">
     <property name="title">
-     <string>Navigation</string>
+     <string>&amp;Camera</string>
     </property>
     <addaction name="actionSetDefPos"/>
    </widget>
    <addaction name="menu"/>
-   <addaction name="menuNavigation"/>
+   <addaction name="menuCamera"/>
    <addaction name="menuHelp"/>
   </widget>
   <action name="actionOpen">
@@ -68,14 +68,12 @@
     <string>&amp;About</string>
    </property>
   </action>
-  <action name="actionFlush">
-   <property name="text">
-    <string>Flush</string>
-   </property>
-  </action>
   <action name="actionSetDefPos">
    <property name="text">
-    <string>Set default position</string>
+    <string>&amp;Default</string>
+   </property>
+   <property name="shortcut">
+    <string>Return</string>
    </property>
   </action>
  </widget>

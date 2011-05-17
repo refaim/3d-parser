@@ -11,12 +11,12 @@ Rotator::Rotator()
 
 void Rotator::setRotation(ECoord aC, EDir aDir)
 {
-	angle[aC] += (int)aDir * ANGLE_STEP; 
+    angle[aC] += (int)aDir * ANGLE_STEP;
 }
 
 void Rotator::rotate() const
 {
-	glRotatef(angle[cX], 1.f, 0.f, 0.f);
+    glRotatef(angle[cX], 1.f, 0.f, 0.f);
     glRotatef(angle[cY], 0.f, 1.f, 0.f);
     glRotatef(angle[cZ], 0.f, 0.f, 1.f);
 }
@@ -38,7 +38,7 @@ SclTransformer::SclTransformer():
 
 void SclTransformer::setScaling(EDir aDir)
 {
-    val += (int)aDir * SCALING_STEP; 
+    val += (int)aDir * SCALING_STEP;
 }
 
 void SclTransformer::scale() const

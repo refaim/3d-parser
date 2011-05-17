@@ -23,7 +23,7 @@ class Viewer : public QGLWidget
     SclTransformer scl;
     NavigationEvent *navEvent;
 
-private slots:
+public slots:
     void setDefPos();
 
 public:

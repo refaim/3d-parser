@@ -58,10 +58,7 @@ MainWindow::MainWindow(QWidget *parent) :
     viewer.setFocus();
     connect(ui.actionOpen, SIGNAL(triggered()), this, SLOT(openFileDialog()));
     connect(ui.actionSetDefPos, SIGNAL(triggered()), &viewer, SLOT(setDefPos()));
-
-    #ifdef DEBUG
-        viewer.loadScene("../contrib/assimp/test/models-nonbsd/X/dwarf.x");
-    #endif
+    ui.menuCamera->setEnabled(false);
 }
 
 void MainWindow::openFileDialog()
@@ -92,6 +89,7 @@ void MainWindow::openFileDialog()
     try
     {
         viewer.loadScene(filename.toStdString());
+        ui.menuCamera->setEnabled(true);
     }
     catch (ImportError error)
     {

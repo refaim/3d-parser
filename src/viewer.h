@@ -25,8 +25,7 @@ class Viewer : public QGLWidget
 	Rotator rot;
     SclTransformer scl;
     
-
-private slots:
+public slots:
     void setDefPos();
 
 public:

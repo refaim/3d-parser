@@ -57,6 +57,8 @@ MainWindow::MainWindow(QWidget *parent) :
     setCentralWidget(&viewer);
     viewer.setFocus();
     connect(ui.actionOpen, SIGNAL(triggered()), this, SLOT(openFileDialog()));
+    connect(ui.actionSetDefPos, SIGNAL(triggered()), &viewer, SLOT(setDefPos()));
+    ui.menuCamera->setEnabled(false);
 }
 
 void MainWindow::openFileDialog()
@@ -87,6 +89,7 @@ void MainWindow::openFileDialog()
     try
     {
         viewer.loadScene(filename.toStdString());
+        ui.menuCamera->setEnabled(true);
     }
     catch (ImportError error)
     {

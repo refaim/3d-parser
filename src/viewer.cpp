@@ -6,7 +6,13 @@
 #include <QMap>
 #include <QtGui>
 
-Viewer::Viewer(QWidget *parent) : QGLWidget(parent), sceneList(0) {}
+#define GL_MULTISAMPLE				0x809D
+
+Viewer::Viewer(QWidget *parent) : QGLWidget(parent), sceneList(0)
+{
+    navEvent = new NavigationEvent(this, &rot, &scl);
+    installEventFilter(navEvent);
+}
 
 void Viewer::initializeGL()
 {
@@ -302,6 +308,7 @@ void Viewer::loadTextures()
 Viewer::~Viewer()
 {
     freeTextures();
+    delete navEvent;
 }
 
 void Viewer::freeTextures()
@@ -311,49 +318,6 @@ void Viewer::freeTextures()
         deleteTexture(i.value());
     }
     textureIds.clear();
-}
-
-void Viewer::keyPressEvent(QKeyEvent *ev)
-{
-	switch (ev->key())
-	{
-		case Qt::Key_Left:
-            rot.setRotation(Rotator::cY, Rotator::dLeft);
-			break;
-		case Qt::Key_Right:
-			rot.setRotation(Rotator::cY, Rotator::dRight);
-			break;
-		case Qt::Key_Up:
-			rot.setRotation(Rotator::cX, Rotator::dLeft);
-			break;
-		case Qt::Key_Down:
-			rot.setRotation(Rotator::cX, Rotator::dRight);
-			break;
-		case Qt::Key_PageUp:
-			rot.setRotation(Rotator::cZ, Rotator::dRight);
-			break;
-		case Qt::Key_PageDown:
-			rot.setRotation(Rotator::cZ, Rotator::dLeft);
-			break;
-        case Qt::Key_Plus:
-            scl.setScaling(SclTransformer::dPlus);
-            break;
-        case Qt::Key_Minus:
-            scl.setScaling(SclTransformer::dMinus);
-            break;
-	}
-	updateGL();
-}
-
-void Viewer::keyReleaseEvent(QKeyEvent *ev)
-{
- //   switch (ev->key())
-	//{
-	//	case Qt::Key_Left:
- //           rot.setRotateY(Rotator::dLeft);
-	//		break;
- //   }
- //   updateGL();
 }
 
 void Viewer::setDefPos()

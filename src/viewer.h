@@ -2,13 +2,10 @@
 #define VIEWER_H
 
 #include <string>
-#include <QGLWidget>
 #include <QMap>
 #include <QKeyEvent>
-#include <QSet>
 #include "navigator.h"
 #include "scenemodel.h"
-
 
 class Viewer : public QGLWidget
 {
@@ -24,7 +21,7 @@ class Viewer : public QGLWidget
 
 	Rotator rot;
     SclTransformer scl;
-    
+    NavigationEvent *navEvent;
 
 private slots:
     void setDefPos();
@@ -38,9 +35,6 @@ public:
 
     void loadScene(const std::string &filename);
     ~Viewer();
-
-	void keyPressEvent(QKeyEvent *ev);
-    void keyReleaseEvent(QKeyEvent *ev);
 
     explicit Viewer(QWidget *parent = 0);
 };

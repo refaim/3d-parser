@@ -1,7 +1,13 @@
 #ifndef NAVIGATOR_H
 #define NAVIGATOR_H
 
-#include <GL/glu.h>
+#include <QGLWidget>
+#include <QKeyEvent>
+#include <QTimer>
+#include <QMap>
+#include <QPair>
+
+#include <GL/gl.h>
 
 class Navigator
 {
@@ -58,6 +64,39 @@ public:
     void setScaling(EDir aDir);
 	void scale() const;
     void setDefault();
+};
+
+/**************************************************************/
+
+typedef QPair<Rotator::ECoord, Rotator::EDir> PairRot;
+typedef QMap<int, PairRot> MapKPRot;
+
+typedef QMap<int, SclTransformer::EDir> MapKPScl;
+
+class NavigationEvent: public QObject
+{
+    Q_OBJECT
+
+private:
+    static const int TMR_INTERVAL = 25;
+
+    QGLWidget *widGl;
+    Rotator *rot;
+    SclTransformer *scl;
+
+    QTimer tmr;
+
+    MapKPRot mapKPRot;
+    MapKPScl mapKPScl;
+
+private slots:
+    void repeatEvent();
+    
+protected:
+    bool eventFilter(QObject *aObj, QEvent *aEvent);
+
+public:
+    NavigationEvent(QGLWidget *aParent, Rotator *aRot, SclTransformer *aScl);
 };
 
 #endif  // NAVIGATOR_H

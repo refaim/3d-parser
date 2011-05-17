@@ -93,6 +93,6 @@ void MainWindow::openFileDialog()
     }
     catch (ImportError error)
     {
-        QMessageBox::critical(this, "Importer error", error.what());
+        QMessageBox::critical(this, "Import error", error.what());
     }
 }

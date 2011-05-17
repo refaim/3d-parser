@@ -259,12 +259,12 @@ void Viewer::resizeGL(int w, int h)
 
 void Viewer::loadScene(const std::string &filename)
 {
+    sceneModel.loadScene(filename);
     if (sceneList)
     {
         glDeleteLists(sceneList, 1);
         sceneList = 0;
     }
-    sceneModel.loadScene(filename);
     loadTextures();
     // now we need redraw our brand new scene
     updateGL();
@@ -278,7 +278,7 @@ void Viewer::loadTextures()
     }
     if (sceneModel->HasTextures())
     {
-        QMessageBox::critical(this, "Feature not implemented", "Can't import embedded textures");
+        QMessageBox::critical(this, "Feature not implemented", "Embedded textures are not supported");
         return;
     }
     freeTextures(); // Makes no harm if there is no textures loaded;

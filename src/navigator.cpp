@@ -1,35 +1,52 @@
 #include "viewer.h" //Must be changed to #include "navigator.h"
 
+/**************************************************************/
+
 const float Rotator::ANGLE_STEP = 10.f;
 
 Rotator::Rotator()
 {
-    showFace();
+    setDefault();
 }
 
-void Rotator::showFace()
+void Rotator::setRotation(ECoord aC, EDir aDir)
 {
-    angleX = angleY = angleZ = 0.f;
+    angle[aC] += (int)aDir * ANGLE_STEP;
 }
 
-void Rotator::setRotateY(EDir aDir)
+void Rotator::rotate() const
 {
-    angleY += (int)aDir * ANGLE_STEP; 
+    glRotatef(angle[cX], 1.f, 0.f, 0.f);
+    glRotatef(angle[cY], 0.f, 1.f, 0.f);
+    glRotatef(angle[cZ], 0.f, 0.f, 1.f);
 }
 
-void Rotator::setRotateX(EDir aDir)
+void Rotator::setDefault()
 {
-    angleX += (int)aDir * ANGLE_STEP;
+    angle[cX] = angle[cX] = angle[cX] = 0.f;
 }
 
-void Rotator::setRotateZ(EDir aDir)
+/**************************************************************/
+
+const float SclTransformer::SCALING_STEP = 0.1f;
+
+SclTransformer::SclTransformer():
+    val(0.f)
 {
-    angleZ += (int)aDir * ANGLE_STEP;
+    //empty
 }
 
-void Rotator::Rotate() const
+void SclTransformer::setScaling(EDir aDir)
 {
-    glRotatef(angleX, 1.0, 0.0, 0.0);
-    glRotatef(angleY, 0.0, 1.0, 0.0);
-    glRotatef(angleZ, 0.0, 0.0, 1.0);
+    val += (int)aDir * SCALING_STEP;
+}
+
+void SclTransformer::scale() const
+{
+    glTranslatef(0.f, 0.f, val);
+}
+
+void SclTransformer::setDefault()
+{
+    val = 0.f;
 }

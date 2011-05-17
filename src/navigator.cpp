@@ -23,7 +23,7 @@ void Rotator::rotate() const
 
 void Rotator::setDefault()
 {
-    angle[cX] = angle[cX] = angle[cX] = 0.f;
+    angle[cX] = angle[cY] = angle[cZ] = 0.f;
 }
 
 /**************************************************************/
